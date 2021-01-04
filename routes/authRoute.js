@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+
 const { 
     allFieldsOk, 
     emailFormatOk, 
     passwordsEqual, 
-    hashing 
+    hashing,
+    compareDecryptPassword
 } = require('../functions/authentication');
 
 
@@ -61,12 +64,52 @@ router.post('/register', async (req, res) => {
         await newUSer.save();
         res
         .status(201)
-        .json({ message: 'User succesfully created!' });
+        .json({ success: true, message: 'User succesfully created!' });
     } catch(err) {
         res
         .status(500)
-        .json({ message: err.message });
+        .json({ error: true, message: err.message });
     }
+});
+
+router.post('/login', async (req, res) => {
+
+    const { email, password } = req.body;
+
+    //Check if user is registered
+    const user = await User.findOne({ email });
+    if (!user) {
+        return res
+        .status(400)
+        .json({ error: true, message: 'User not registered! You need to create an account first!' });
+    }
+
+    //Compare passwords
+    if (! await compareDecryptPassword(password, user.password)) {
+        return res
+        .status(400)
+        .json({ message: 'Password not correct!' });
+    } 
+
+    //Generate token
+    const token = jwt.sign(
+        { userID: user._id }, 
+        process.env.JWT_KEY, 
+        { expiresIn: "20m" }
+    );
+
+    //Send data back to the client
+    const currentUser = {
+        token,
+        user: {
+            id: user._id,
+            name: user.name,
+        }
+    }
+
+    res
+    .status(200)
+    .json({ currentUser });
 });
 
 
