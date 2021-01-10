@@ -60,7 +60,7 @@
                         data: this.userData
                     });
                     const currentUser = response.data.currentUser;
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser.token));
+                    localStorage.setItem('currentUserToken', JSON.stringify(currentUser.token));
                     this.$router.replace('/');
                     //replace this route with authenticated route (/qa)
                 } catch(err) {
