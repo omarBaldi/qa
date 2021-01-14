@@ -39,7 +39,8 @@
 </template>
 
 <script>
-    import axios from 'axios';
+    /* eslint-disable */
+    import { mapActions } from 'vuex'
 
     export default {
         name: 'Login',
@@ -52,20 +53,11 @@
             }
         },
         methods: {
-            async loginUser() {
-                try {
-                    const response = await axios({
-                        method: 'POST',
-                        url: 'http://localhost:3000/auth/login',
-                        data: this.userData
-                    });
-                    const currentUser = response.data.currentUser;
-                    localStorage.setItem('currentUserToken', JSON.stringify(currentUser.token));
-                    this.$router.replace('/');
-                    //replace this route with authenticated route (/qa)
-                } catch(err) {
-                    console.log(err.response)
-                }
+            ...mapActions('Auth', ['login']),
+            loginUser() {
+                this.login(this.userData)
+                    .then(() => this.$router.replace({ path: '/qa' }))
+                    .catch((err) => console.log("Err: ", err.response.data.message));
             }
         }
     }

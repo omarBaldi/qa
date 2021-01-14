@@ -44,6 +44,7 @@ router.post('/register', async (req, res) => {
 
     //Check if password is equal to the confirmed password
     if (!passwordsEqual(password, confirmPassword)) {
+        console.log("passwords different")
         return res
         .status(400)
         .json({ message: 'Passwords are different!' });

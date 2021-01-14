@@ -66,7 +66,7 @@
 
 <script>
 	/* eslint-disable */
-	import axios from 'axios'
+	import { mapActions } from 'vuex';
 
 	export default {
 		name: 'Register',
@@ -81,14 +81,11 @@
 			}
 		},
 		methods: {
-			async registerUser() {
-				await axios({
-					method: 'POST',
-					url: 'http://localhost:3000/auth/register',
-					data: this.userData
-				});
-				
-				this.$router.replace({ path: '/login' });
+			...mapActions('Auth', ['register']),
+			registerUser() {
+				this.register(this.userData)
+					.then(() => this.$router.replace({ path: '/login' }))
+					.catch((err) => console.log(err.response.data.message));
 			}
 		}
 	}
