@@ -24,9 +24,6 @@ module.exports = {
     },
 
     compareDecryptPassword: async (password, hashedPassword) => {
-        const a = await bcrypt.compare(password, hashedPassword);
-        console.log(a);
-        return a;
         return await bcrypt.compare(password, hashedPassword);
     }
 
