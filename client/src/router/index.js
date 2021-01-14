@@ -5,10 +5,15 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Homepage from '../views/Homepage.vue'
 import Dashboard from '../views/QA/Dashboard.vue'
+import notFound from '../views/notFound.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
+	{
+		path: '*',
+		component: notFound
+	},
 	{
 		path: '/',
 		name: 'Homepage',
